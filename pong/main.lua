@@ -20,6 +20,8 @@ function love.load()
 
     math.randomseed(os.time())
 
+    love.window.setTitle('Pong')
+
     -- more retro-looking fonr object we can use for any text
     smallFont = love.graphics.newFont('font.ttf', 8)
 
@@ -106,5 +108,13 @@ function love.draw()
     -- render ball using its class's render method
     ball:render()
 
+    displayFPS()
+
     push:apply('end')
+end
+
+function displayFPS()
+    love.graphics.setFont(smallFont)
+    love.graphics.setColor(0/255, 255/255, 0/255, 1)
+    love.graphics.print('FPS: ' .. tostring(love.timer.getFPS()), 10, 10)
 end
