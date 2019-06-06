@@ -44,7 +44,47 @@ function love.load()
 end
 
 function love.update(dt)
-    -- player 1 movement
+    if gameState == 'play' then
+        ball:update(dt)
+
+        -- detect ball collision with paddles, reversing dx if true and
+        -- slightly increasing it, then altering the dy based on the position
+        if ball:collides(player1) then
+            ball.dx = -ball.dx * 1.03
+            ball.x = player1.x + player1.width       
+            
+            -- keep velocity going in the same direction, but randomize it
+            if ball.dy < 0 then
+                ball.dy = -math.random(10, 150)
+            else
+                ball.dy = math.random(10, 50)
+            end
+        end
+
+        if ball:collides(player2) then
+            ball.dx = -ball.dx * 1.03
+            ball.x = player2.x - ball.width
+
+            -- keep velocity going in the same direction, but randomize it
+            if ball.dy < 0 then
+                ball.dy = -math.random(10, 150)
+            else
+                ball.dy = math.random(10, 50)
+            end
+        end
+
+        if ball.y <= 0 then
+            ball.y = 0
+            ball.dy = -ball.dy
+        end
+
+        if ball.y > VIRTUAL_HEIGHT - ball.height then
+            ball.y = VIRTUAL_HEIGHT - ball.height
+            ball.dy = -ball.dy * 1.03
+        end 
+    end
+
+    -- player 1 movemesnt
     if love.keyboard.isDown('w') then
         player1.dy = -PADDLE_SPEED
     elseif love.keyboard.isDown('s') then
@@ -62,9 +102,9 @@ function love.update(dt)
         player2.dy = 0
     end
 
-    if gameState == 'play' then
-        ball:update(dt)
-    end
+    -- if gameState == 'play' then
+    --     ball:update(dt)
+    -- end
 
     player1:update(dt)
     player2:update(dt)
@@ -106,7 +146,7 @@ function love.draw()
     -- render second paddle (right side)
     player2:render()
     -- render ball using its class's render method
-    ball:render()
+    ball:render()    
 
     displayFPS()
 
